@@ -1,0 +1,4 @@
+/home/fedor/lab/lab03/solver_application/build/CMakeFiles/solver_lib.dir
+/home/fedor/lab/lab03/solver_application/build/CMakeFiles/solver_application.dir
+/home/fedor/lab/lab03/solver_application/build/CMakeFiles/edit_cache.dir
+/home/fedor/lab/lab03/solver_application/build/CMakeFiles/rebuild_cache.dir
