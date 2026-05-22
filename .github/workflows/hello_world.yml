@@ -1,0 +1,67 @@
+name: GitHub Actions Lab04 hello_world
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        build_type: [Release]
+        c_compiler: [gcc, clang, cl]
+        include:
+          - os: windows-latest
+            c_compiler: cl
+            cpp_compiler: cl
+          - os: ubuntu-latest
+            c_compiler: gcc
+            cpp_compiler: g++
+          - os: ubuntu-latest
+            c_compiler: clang
+            cpp_compiler: clang++
+        exclude:
+          - os: windows-latest
+            c_compiler: gcc
+          - os: windows-latest
+            c_compiler: clang
+          - os: ubuntu-latest
+            c_compiler: cl
+    steps:
+    - name: Checkout repository master
+      uses: actions/checkout@master
+    - name: Set reusable strings for hello_world
+      id: strings
+      shell: bash
+      run: |
+        echo "build-output-dir=${{github.workspace}}/hello_world_application/build" >> "$GITHUB_OUTPUT"
+    - name: Configure CMake for hello_world
+      run: >
+        cmake -B ${{ steps.strings.outputs.build-output-dir }}
+        -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
+        -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
+        -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+        -S ${{github.workspace}}/hello_world_application/
+    - name: Build hello_world
+      run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
+    - if: ${{ matrix.os == 'ubuntu-latest' }}
+      name: Upload hello_world for Linux
+      uses: actions/upload-artifact@v7.0.1
+      with:
+        path: ${{ steps.strings.outputs.build-output-dir }}/hello_world_application
+        archive: false
+    - if: ${{ matrix.os == 'windows-latest' }}
+      name: Upload hello_world for Window
+      uses: actions/upload-artifact@v7.0.1
+      with:
+        path: ${{ steps.strings.outputs.build-output-dir }}/Release/hello_world_application.exe
+        archive: false
+    - if: ${{ matrix.os == 'ubuntu-latest' }}
+      name: Run hello_world
+      run: ${{ steps.strings.outputs.build-output-dir }}/hello_world_application
+    - if: ${{ matrix.os == 'windows-latest' }}
+      name: Run hello_world
+      run: ${{ steps.strings.outputs.build-output-dir }}/Release/hello_world_application.exe

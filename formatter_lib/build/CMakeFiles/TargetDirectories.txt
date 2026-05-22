@@ -1,3 +1,0 @@
-/home/fedor/lab/lab03/formatter_lib/build/CMakeFiles/formatter.dir
-/home/fedor/lab/lab03/formatter_lib/build/CMakeFiles/edit_cache.dir
-/home/fedor/lab/lab03/formatter_lib/build/CMakeFiles/rebuild_cache.dir
